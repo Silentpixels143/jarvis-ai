@@ -1,286 +1,143 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="theme-color" content="#050b18">
-<title>JARVIS AI v1.0</title>
-
-<style>
-*{box-sizing:border-box}
-body{
- margin:0;min-height:100vh;background:#050b18;color:#dffaff;
- font-family:Arial,sans-serif;
- background-image:radial-gradient(ellipse at 50% 25%,#102b4b,#050b18 65%);
-}
-header{
- display:flex;justify-content:space-between;align-items:center;
- padding:18px 15px;border-bottom:1px solid #16435a;
-}
-.logo{font-size:20px;font-weight:bold;letter-spacing:3px;color:#62eaff}
-.status{font-size:10px;color:#65ffc5}
-main{max-width:600px;margin:auto;padding:18px 14px}
-h1{text-align:center;font-size:23px;letter-spacing:4px}
-.sub{text-align:center;color:#78a9c5;font-size:10px;letter-spacing:2px}
-.core-wrap{display:flex;justify-content:center;margin:28px 0 18px}
-.core{
- width:180px;height:180px;border-radius:50%;display:grid;
- place-items:center;position:relative;border:1px solid #42dfff;
- box-shadow:0 0 20px #087fae,inset 0 0 25px #087fae;
- animation:pulse 3s infinite;
-}
-.core:before,.core:after{
- content:"";position:absolute;border-radius:50%;border:1px solid #36cfff;
-}
-.core:before{inset:12px;border-style:dashed;animation:spin 18s linear infinite}
-.core:after{inset:28px;box-shadow:0 0 24px #00bfff}
-.core-inner{z-index:1;text-align:center}
-.arc{font-size:38px;color:#a5f5ff;text-shadow:0 0 18px #00bfff}
-.core-label{font-size:10px;letter-spacing:3px;margin-top:7px}
-@keyframes spin{to{transform:rotate(360deg)}}
-@keyframes pulse{50%{box-shadow:0 0 32px #087fae,inset 0 0 35px #087fae}}
-.wave{height:35px;display:flex;align-items:center;justify-content:center;gap:4px}
-.wave i{width:3px;height:9px;border-radius:5px;background:#41dfff;animation:wave .8s infinite alternate}
-.wave i:nth-child(3n){animation-delay:.3s}
-.wave i:nth-child(2n){animation-delay:.5s}
-@keyframes wave{to{height:27px;opacity:.5}}
-.panel{
- background:#091627e8;border:1px solid #16435a;
- border-radius:13px;padding:14px;margin:14px 0;
-}
-.panel-title{font-size:10px;letter-spacing:2px;color:#5ee6ff;margin-bottom:10px}
-#clock{font-size:25px;margin-top:5px}
-#date{font-size:12px;color:#8baec5;margin-top:5px}
-#chat{height:190px;overflow-y:auto;font-size:14px;line-height:1.5}
-.msg{padding:10px 12px;border-radius:10px;margin:8px 0;overflow-wrap:anywhere;white-space:pre-wrap}
-.bot{background:#10283b;border-left:2px solid #40dfff}
-.user{background:#12364b;border-right:2px solid #40dfff}
-.who{font-size:10px;color:#68eaff;letter-spacing:1px;margin-bottom:4px}
-form{display:flex;gap:7px;margin-top:12px}
-input{
- flex:1;min-width:0;width:100%;background:#050d19;
- border:1px solid #20516b;border-radius:10px;
- padding:12px;color:white;font-size:14px;outline:none
-}
-button{
- border:1px solid #31ccef;background:#0b263a;color:#85efff;
- border-radius:9px;padding:11px 10px;font-size:12px;cursor:pointer
-}
-.actions{display:flex;gap:7px;margin-top:10px}
-.actions button{flex:1;min-width:0}
-footer{text-align:center;color:#547d96;font-size:10px;letter-spacing:2px;padding:22px}
-</style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Jarvis AI</title>
+  <style>
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      min-height: 100vh;
+      background: #07111f;
+      color: #eaf6ff;
+      font-family: Arial, sans-serif;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 18px;
+    }
+    .app {
+      width: 100%;
+      max-width: 600px;
+      border: 1px solid #164e63;
+      border-radius: 20px;
+      padding: 22px;
+      background: #0c1b2b;
+      box-shadow: 0 0 30px #0891b222;
+    }
+    h1 { color: #67e8f9; text-align: center; }
+    #status { text-align: center; color: #a5f3fc; }
+    #chat {
+      height: 330px;
+      overflow-y: auto;
+      margin: 20px 0;
+      padding: 12px;
+      border-radius: 12px;
+      background: #06101c;
+    }
+    .msg {
+      padding: 11px;
+      margin: 9px 0;
+      border-radius: 10px;
+      white-space: pre-wrap;
+      overflow-wrap: anywhere;
+      line-height: 1.5;
+    }
+    .user { background: #164e63; }
+    .bot { background: #17283b; }
+    .controls { display: flex; gap: 8px; }
+    input {
+      min-width: 0;
+      flex: 1;
+      padding: 13px;
+      border-radius: 10px;
+      border: 1px solid #155e75;
+      background: #07111f;
+      color: white;
+      font-size: 16px;
+    }
+    button {
+      border: 0;
+      border-radius: 10px;
+      padding: 12px 16px;
+      color: #04111d;
+      background: #67e8f9;
+      font-weight: bold;
+      cursor: pointer;
+    }
+    button:disabled { opacity: .5; }
+  </style>
 </head>
-
 <body>
-<header>
- <div class="logo">J.A.R.V.I.S</div>
- <div class="status">● SYSTEM ONLINE</div>
-</header>
+  <main class="app">
+    <h1>JARVIS AI</h1>
+    <p id="status">Hello Sir, All Systems Are Ready</p>
+    <div id="chat" aria-live="polite">
+      <div class="msg bot">Hello Sir! I am Jarvis. How can I help you?</div>
+    </div>
+    <form id="form" class="controls">
+      <input id="message" placeholder="Ask Jarvis anything..." autocomplete="off" required>
+      <button id="send" type="submit">Send</button>
+    </form>
+  </main>
 
-<main>
- <h1>GOOD DAY, SIR</h1>
- <div class="sub">PERSONAL AI INTERFACE · V1.0</div>
+  <script>
+    // Replace this with your actual Cloudflare Worker URL.
+    const WORKER_URL = "https://jarvis-ai-backend.babbarv48.workers.dev/";
 
- <div class="core-wrap">
-  <div class="core">
-   <div class="core-inner">
-    <div class="arc">✳</div>
-    <div class="core-label">JARVIS CORE</div>
-   </div>
-  </div>
- </div>
+    const form = document.getElementById("form");
+    const input = document.getElementById("message");
+    const chat = document.getElementById("chat");
+    const status = document.getElementById("status");
+    const send = document.getElementById("send");
 
- <div class="wave" aria-label="Animated waveform">
-  <i></i><i></i><i></i><i></i><i></i><i></i><i></i>
-  <i></i><i></i><i></i><i></i><i></i><i></i><i></i>
-  <i></i><i></i><i></i><i></i><i></i>
- </div>
+    function addMessage(text, who) {
+      const div = document.createElement("div");
+      div.className = "msg " + who;
+      div.textContent = text;
+      chat.appendChild(div);
+      chat.scrollTop = chat.scrollHeight;
+      return div;
+    }
 
- <section class="panel">
-  <div class="panel-title">LOCAL SYSTEM TIME</div>
-  <div id="clock">--:--:--</div>
-  <div id="date">Initializing...</div>
- </section>
+    form.addEventListener("submit", async (event) => {
+      event.preventDefault();
+      const message = input.value.trim();
+      if (!message || send.disabled) return;
 
- <section class="panel">
-  <div class="panel-title">AI COMMUNICATION TERMINAL</div>
-  <div id="chat" aria-live="polite"></div>
+      addMessage(message, "user");
+      input.value = "";
+      send.disabled = true;
+      status.textContent = "Jarvis is thinking...";
+      const loading = addMessage("Please wait...", "bot");
 
-  <form id="form">
-   <input id="input" placeholder="Type a command, Sir..." autocomplete="off" aria-label="Message">
-   <button type="submit">SEND</button>
-  </form>
+      try {
+        if (WORKER_URL.includes("PASTE_YOUR")) {
+          throw new Error("First add your Cloudflare Worker URL in the code.");
+        }
 
-  <div class="actions">
-   <button id="mic">🎙 VOICE</button>
-   <button id="speak">🔊 SPEAK</button>
-   <button id="clear">CLEAR CHAT</button>
-  </div>
- </section>
+        const response = await fetch(WORKER_URL, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ message })
+        });
 
- <section class="panel">
-  <div class="panel-title">QUICK COMMANDS</div>
-  <div class="actions">
-   <button data-cmd="time">TIME</button>
-   <button data-cmd="YouTube">YOUTUBE</button>
-   <button data-cmd="search">WEB SEARCH</button>
-  </div>
- </section>
-</main>
+        const data = await response.json();
+        if (!response.ok) {
+          throw new Error(data.error || "Request failed.");
+        }
 
-<footer>JARVIS AI · PERSONAL ASSISTANT</footer>
-
-<script>
-const chat=document.getElementById("chat");
-const input=document.getElementById("input");
-const STORAGE_KEY="jarvisChat";
-let lastReply="Systems initialized, Sir.";
-
-function updateClock(){
- const now=new Date();
- document.getElementById("clock").textContent=now.toLocaleTimeString();
- document.getElementById("date").textContent=now.toLocaleDateString(
-  "en-IN",{weekday:"long",year:"numeric",month:"long",day:"numeric"}
- );
-}
-updateClock();
-setInterval(updateClock,1000);
-
-function renderMessage(who,text){
- const box=document.createElement("div");
- box.className="msg "+(who==="YOU"?"user":"bot");
- const label=document.createElement("div");
- label.className="who";
- label.textContent=who;
- const content=document.createElement("div");
- content.textContent=text;
- box.append(label,content);
- chat.appendChild(box);
- chat.scrollTop=chat.scrollHeight;
-}
-
-function getHistory(){
- try{
-  const data=JSON.parse(localStorage.getItem(STORAGE_KEY)||"[]");
-  return Array.isArray(data)?data:[];
- }catch(e){return [];}
-}
-
-function saveHistory(history){
- try{
-  localStorage.setItem(STORAGE_KEY,JSON.stringify(history.slice(-100)));
- }catch(e){}
-}
-
-function addMessage(who,text){
- renderMessage(who,text);
- const history=getHistory();
- history.push({who:who,text:text});
- saveHistory(history);
-}
-
-function loadHistory(){
- const history=getHistory();
- if(history.length){
-  history.forEach(item=>{
-   if(item&&typeof item.who==="string"&&typeof item.text==="string"){
-    renderMessage(item.who,item.text);
-   }
-  });
- }else{
-  const greeting="Systems initialized, Sir. Your interface is ready.";
-  renderMessage("JARVIS",greeting);
-  saveHistory([{who:"JARVIS",text:greeting}]);
- }
-}
-loadHistory();
-
-function respond(text){
- const q=text.toLowerCase().trim();
- let reply="Sir, I am ready. My Gemini AI connection will be added in a later step.";
-
- if(q==="time"||q.includes("what time")){
-  reply="The current time is "+new Date().toLocaleTimeString()+", Sir.";
- }else if(q.includes("date")){
-  reply="Today's date is "+new Date().toLocaleDateString()+", Sir.";
- }else if(q.includes("youtube")){
-  reply="Opening YouTube, Sir.";
-  addMessage("JARVIS",reply);
-  window.open("https://www.youtube.com/","_blank");
-  lastReply=reply;
-  return;
- }else if(q.startsWith("search ")){
-  const query=text.slice(7).trim();
-  if(query){
-   reply="Searching Google for "+query+", Sir.";
-   addMessage("JARVIS",reply);
-   window.open("https://www.google.com/search?q="+encodeURIComponent(query),"_blank");
-   lastReply=reply;
-   return;
-  }
- }else if(q==="hello"||q.includes("hello jarvis")||q==="hi"){
-  reply="Hello, Sir. All systems are ready.";
- }
- addMessage("JARVIS",reply);
- lastReply=reply;
-}
-
-document.getElementById("form").addEventListener("submit",e=>{
- e.preventDefault();
- const text=input.value.trim();
- if(!text)return;
- addMessage("YOU",text);
- input.value="";
- respond(text);
-});
-
-document.querySelectorAll("[data-cmd]").forEach(btn=>{
- btn.addEventListener("click",()=>{
-  const cmd=btn.dataset.cmd;
-  input.value=cmd==="search"?"search ":cmd;
-  input.focus();
- });
-});
-
-document.getElementById("clear").addEventListener("click",()=>{
- try{localStorage.removeItem(STORAGE_KEY);}catch(e){}
- chat.replaceChildren();
- lastReply="Chat cleared, Sir.";
- addMessage("JARVIS",lastReply);
-});
-
-document.getElementById("speak").addEventListener("click",()=>{
- if(!("speechSynthesis" in window)){
-  addMessage("JARVIS","Speech is not supported by this browser.");
-  return;
- }
- speechSynthesis.cancel();
- const utterance=new SpeechSynthesisUtterance(lastReply);
- utterance.lang="en-US";
- utterance.rate=0.9;
- utterance.pitch=0.85;
- speechSynthesis.speak(utterance);
-});
-
-document.getElementById("mic").addEventListener("click",()=>{
- const SpeechRecognition=window.SpeechRecognition||window.webkitSpeechRecognition;
- if(!SpeechRecognition){
-  addMessage("JARVIS","Voice input is not supported here. Please type your command.");
-  return;
- }
- const recognition=new SpeechRecognition();
- recognition.lang="en-IN";
- recognition.onresult=e=>{
-  input.value=e.results[0][0].transcript;
-  document.getElementById("form").requestSubmit();
- };
- recognition.onerror=()=>{
-  addMessage("JARVIS","I could not hear that, Sir. Please try again.");
- };
- try{recognition.start();}
- catch(e){addMessage("JARVIS","Please try the microphone again, Sir.");}
-});
-</script>
+        loading.textContent = data.reply || "No reply received.";
+        status.textContent = "Gemini AI connected";
+      } catch (error) {
+        loading.textContent = "Error: " + error.message;
+        status.textContent = "Connection needs checking";
+      } finally {
+        send.disabled = false;
+        input.focus();
+      }
+    });
+  </script>
 </body>
 </html>
