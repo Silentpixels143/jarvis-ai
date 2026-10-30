@@ -1,143 +1,437 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Jarvis AI</title>
-  <style>
-    * { box-sizing: border-box; }
-    body {
-      margin: 0;
-      min-height: 100vh;
-      background: #07111f;
-      color: #eaf6ff;
-      font-family: Arial, sans-serif;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      padding: 18px;
-    }
-    .app {
-      width: 100%;
-      max-width: 600px;
-      border: 1px solid #164e63;
-      border-radius: 20px;
-      padding: 22px;
-      background: #0c1b2b;
-      box-shadow: 0 0 30px #0891b222;
-    }
-    h1 { color: #67e8f9; text-align: center; }
-    #status { text-align: center; color: #a5f3fc; }
-    #chat {
-      height: 330px;
-      overflow-y: auto;
-      margin: 20px 0;
-      padding: 12px;
-      border-radius: 12px;
-      background: #06101c;
-    }
-    .msg {
-      padding: 11px;
-      margin: 9px 0;
-      border-radius: 10px;
-      white-space: pre-wrap;
-      overflow-wrap: anywhere;
-      line-height: 1.5;
-    }
-    .user { background: #164e63; }
-    .bot { background: #17283b; }
-    .controls { display: flex; gap: 8px; }
-    input {
-      min-width: 0;
-      flex: 1;
-      padding: 13px;
-      border-radius: 10px;
-      border: 1px solid #155e75;
-      background: #07111f;
-      color: white;
-      font-size: 16px;
-    }
-    button {
-      border: 0;
-      border-radius: 10px;
-      padding: 12px 16px;
-      color: #04111d;
-      background: #67e8f9;
-      font-weight: bold;
-      cursor: pointer;
-    }
-    button:disabled { opacity: .5; }
-  </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#050b14">
+<title>JARVIS AI</title>
+
+<style>
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  background: radial-gradient(circle at center, #10283d, #050b14 65%, #02050a);
+  color: #eafaff;
+  font-family: Arial, sans-serif;
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+
+header {
+  text-align: center;
+  padding: 22px 10px 5px;
+}
+
+header h1 {
+  letter-spacing: 7px;
+  font-size: 27px;
+  color: #d9f8ff;
+  text-shadow: 0 0 15px #00cfff;
+}
+
+header p {
+  color: #70b9d2;
+  font-size: 11px;
+  letter-spacing: 3px;
+  margin-top: 7px;
+}
+
+.reactor-area {
+  height: 290px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.reactor {
+  width: 205px;
+  height: 205px;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  filter: drop-shadow(0 0 18px #00bfff);
+}
+
+.ring {
+  position: absolute;
+  border-radius: 50%;
+  border: 3px solid transparent;
+}
+
+.ring.one {
+  width: 205px;
+  height: 205px;
+  border-top-color: #00eaff;
+  border-bottom-color: #0875aa;
+  animation: spin 5s linear infinite;
+}
+
+.ring.two {
+  width: 175px;
+  height: 175px;
+  border-left: 3px solid #36dfff;
+  border-right: 3px solid #0875aa;
+  animation: spin 3s linear infinite reverse;
+}
+
+.ring.three {
+  width: 145px;
+  height: 145px;
+  border: 2px dashed #50dfff;
+  animation: spin 10s linear infinite;
+}
+
+.core {
+  width: 90px;
+  height: 90px;
+  border-radius: 50%;
+  background: radial-gradient(circle, #ffffff, #53eaff 35%, #0087c9 75%);
+  box-shadow: 0 0 20px #00d9ff, 0 0 55px #008cff;
+  animation: pulse 2s ease-in-out infinite;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+@keyframes pulse {
+  50% { transform: scale(1.12); opacity: .8; }
+}
+
+.status {
+  text-align: center;
+  color: #55dfff;
+  font-size: 12px;
+  letter-spacing: 2px;
+  margin-top: -12px;
+  margin-bottom: 17px;
+  min-height: 16px;
+}
+
+.chat {
+  width: min(92%, 520px);
+  height: 300px;
+  margin: auto;
+  background: rgba(5, 20, 34, .82);
+  border: 1px solid #176080;
+  border-radius: 18px;
+  box-shadow: 0 0 25px #0077aa22;
+  padding: 14px;
+  display: flex;
+  flex-direction: column;
+}
+
+.messages {
+  flex: 1;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 5px;
+}
+
+.message {
+  max-width: 88%;
+  padding: 11px 13px;
+  border-radius: 13px;
+  font-size: 14px;
+  line-height: 1.5;
+  overflow-wrap: anywhere;
+}
+
+.bot {
+  align-self: flex-start;
+  background: #102e43;
+  border: 1px solid #176080;
+}
+
+.user {
+  align-self: flex-end;
+  background: #07577b;
+  border: 1px solid #159ed0;
+}
+
+.input-area {
+  display: flex;
+  gap: 8px;
+  padding-top: 12px;
+}
+
+input {
+  flex: 1;
+  min-width: 0;
+  background: #071522;
+  border: 1px solid #176080;
+  border-radius: 10px;
+  padding: 13px;
+  color: white;
+  outline: none;
+}
+
+button {
+  border: none;
+  border-radius: 10px;
+  padding: 0 15px;
+  background: linear-gradient(135deg, #00b9e8, #006bba);
+  color: white;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+button:disabled {
+  opacity: .5;
+  cursor: wait;
+}
+
+.controls {
+  display: flex;
+  justify-content: center;
+  gap: 12px;
+  margin: 15px 0 22px;
+}
+
+.controls button {
+  padding: 11px 18px;
+  border: 1px solid #1687ae;
+  background: #09253a;
+}
+
+footer {
+  text-align: center;
+  color: #477c94;
+  font-size: 10px;
+  letter-spacing: 2px;
+  padding: 12px;
+}
+
+@media(max-width: 380px) {
+  .reactor-area { height: 260px; }
+  .reactor { transform: scale(.85); }
+  .chat { height: 320px; }
+}
+</style>
 </head>
+
 <body>
-  <main class="app">
-    <h1>JARVIS AI</h1>
-    <p id="status">Hello Sir, All Systems Are Ready</p>
-    <div id="chat" aria-live="polite">
-      <div class="msg bot">Hello Sir! I am Jarvis. How can I help you?</div>
+
+<header>
+  <h1>J.A.R.V.I.S</h1>
+  <p>JUST A RATHER VERY INTELLIGENT SYSTEM</p>
+</header>
+
+<div class="reactor-area">
+  <div class="reactor">
+    <div class="ring one"></div>
+    <div class="ring two"></div>
+    <div class="ring three"></div>
+    <div class="core"></div>
+  </div>
+</div>
+
+<div class="status" id="status">SYSTEM ONLINE</div>
+
+<section class="chat">
+  <div class="messages" id="messages">
+    <div class="message bot">
+      Hello Sir! I am JARVIS. How may I assist you today?
     </div>
-    <form id="form" class="controls">
-      <input id="message" placeholder="Ask Jarvis anything..." autocomplete="off" required>
-      <button id="send" type="submit">Send</button>
-    </form>
-  </main>
+  </div>
 
-  <script>
-    // Replace this with your actual Cloudflare Worker URL.
-    const WORKER_URL = "https://jarvis-ai-backend.babbarv48.workers.dev/";
+  <div class="input-area">
+    <input id="userInput" placeholder="Ask me anything..." autocomplete="off">
+    <button id="sendBtn" onclick="sendMessage()">SEND</button>
+  </div>
+</section>
 
-    const form = document.getElementById("form");
-    const input = document.getElementById("message");
-    const chat = document.getElementById("chat");
-    const status = document.getElementById("status");
-    const send = document.getElementById("send");
+<div class="controls">
+  <button onclick="startListening()">🎙 SPEAK</button>
+  <button onclick="stopSpeaking()">🔇 STOP VOICE</button>
+</div>
 
-    function addMessage(text, who) {
-      const div = document.createElement("div");
-      div.className = "msg " + who;
-      div.textContent = text;
-      chat.appendChild(div);
-      chat.scrollTop = chat.scrollHeight;
-      return div;
+<footer>JARVIS AI SYSTEM • PERSONAL ASSISTANT</footer>
+
+<script>
+
+/* CLOUDFLARE WORKER CONNECTION */
+const WORKER_URL =
+  "https://jarvis-ai-backend.babbarv48.workers.dev/";
+
+const messages = document.getElementById("messages");
+const input = document.getElementById("userInput");
+const statusText = document.getElementById("status");
+const sendBtn = document.getElementById("sendBtn");
+
+function addMessage(text, type) {
+  const div = document.createElement("div");
+  div.className = "message " + type;
+  div.textContent = text;
+  messages.appendChild(div);
+  messages.scrollTop = messages.scrollHeight;
+  return div;
+}
+
+function setStatus(text) {
+  statusText.textContent = text;
+}
+
+async function sendMessage() {
+  const message = input.value.trim();
+
+  if (!message || sendBtn.disabled) return;
+
+  addMessage(message, "user");
+  input.value = "";
+
+  sendBtn.disabled = true;
+  setStatus("PROCESSING YOUR REQUEST");
+
+  const loading = addMessage("One moment, Sir...", "bot");
+
+  try {
+    const response = await fetch(WORKER_URL, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({
+        message: message
+      })
+    });
+
+    const data = await response.json();
+
+    if (!response.ok) {
+      throw new Error("Request failed");
     }
 
-    form.addEventListener("submit", async (event) => {
-      event.preventDefault();
-      const message = input.value.trim();
-      if (!message || send.disabled) return;
+    const reply =
+      data.reply ||
+      data.response ||
+      data.answer ||
+      data.result ||
+      data.message;
 
-      addMessage(message, "user");
-      input.value = "";
-      send.disabled = true;
-      status.textContent = "Jarvis is thinking...";
-      const loading = addMessage("Please wait...", "bot");
+    if (typeof reply !== "string" || !reply.trim()) {
+      throw new Error("Empty response");
+    }
 
-      try {
-        if (WORKER_URL.includes("PASTE_YOUR")) {
-          throw new Error("First add your Cloudflare Worker URL in the code.");
-        }
+    loading.remove();
+    addMessage(reply, "bot");
+    speak(reply);
 
-        const response = await fetch(WORKER_URL, {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ message })
-        });
+    setStatus("SYSTEM ONLINE");
 
-        const data = await response.json();
-        if (!response.ok) {
-          throw new Error(data.error || "Request failed.");
-        }
+  } catch (error) {
+    loading.remove();
 
-        loading.textContent = data.reply || "No reply received.";
-        status.textContent = "Gemini AI connected";
-      } catch (error) {
-        loading.textContent = "Error: " + error.message;
-        status.textContent = "Connection needs checking";
-      } finally {
-        send.disabled = false;
-        input.focus();
-      }
-    });
-  </script>
+    addMessage(
+      "I'm having a little trouble connecting right now. Please try again, Sir.",
+      "bot"
+    );
+
+    setStatus("READY FOR YOUR NEXT COMMAND");
+
+  } finally {
+    sendBtn.disabled = false;
+    input.focus();
+  }
+}
+
+input.addEventListener("keydown", function(event) {
+  if (event.key === "Enter") {
+    sendMessage();
+  }
+});
+
+/* FEMALE VOICE SUPPORT */
+function speak(text) {
+  if (!("speechSynthesis" in window)) return;
+
+  speechSynthesis.cancel();
+
+  const speech = new SpeechSynthesisUtterance(text);
+  const voices = speechSynthesis.getVoices();
+
+  const preferred =
+    voices.find(v => /female/i.test(v.name)) ||
+    voices.find(v => /Google UK English Female/i.test(v.name)) ||
+    voices.find(v => /hi-IN|en-IN/i.test(v.lang));
+
+  if (preferred) {
+    speech.voice = preferred;
+    speech.lang = preferred.lang;
+  } else {
+    speech.lang = "en-IN";
+  }
+
+  speech.rate = 0.95;
+  speech.pitch = 1.05;
+  speech.volume = 1;
+
+  speech.onstart = () => setStatus("JARVIS IS SPEAKING");
+  speech.onend = () => setStatus("SYSTEM ONLINE");
+
+  speechSynthesis.speak(speech);
+}
+
+function stopSpeaking() {
+  if ("speechSynthesis" in window) {
+    speechSynthesis.cancel();
+  }
+
+  setStatus("SYSTEM ONLINE");
+}
+
+/* VOICE INPUT */
+function startListening() {
+  const SpeechRecognition =
+    window.SpeechRecognition ||
+    window.webkitSpeechRecognition;
+
+  if (!SpeechRecognition) {
+    addMessage(
+      "Voice input is not available in this browser, Sir.",
+      "bot"
+    );
+    return;
+  }
+
+  const recognition = new SpeechRecognition();
+
+  recognition.lang = "hi-IN";
+  recognition.interimResults = false;
+
+  recognition.onstart = () => setStatus("LISTENING");
+
+  recognition.onresult = event => {
+    input.value = event.results[0][0].transcript;
+    sendMessage();
+  };
+
+  recognition.onerror = () => {
+    setStatus("READY FOR YOUR NEXT COMMAND");
+  };
+
+  recognition.onend = () => {
+    if (!speechSynthesis.speaking) {
+      setStatus("SYSTEM ONLINE");
+    }
+  };
+
+  recognition.start();
+}
+
+if ("speechSynthesis" in window) {
+  speechSynthesis.getVoices();
+}
+
+</script>
+
 </body>
 </html>
